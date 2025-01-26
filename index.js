@@ -3,6 +3,7 @@ async function sayHello() {
     chrome.scripting.executeScript({
         target: { tabId: tabs.id },
         func: () => {
+            // document.body This changes users webpage DOM
             alert('Hello, from my extension!');
         },
     });
