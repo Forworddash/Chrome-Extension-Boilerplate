@@ -1,5 +1,22 @@
 {
     "manifest_version": 3,
     "version": "1.0.0",
-    "name": "vite_extension_boilerplate"
+    "name": "vite_extension_boilerplate",
+    "action": {
+        "default_popup": "index.html"
+    },
+    "permissions": [
+        "scripting"
+    ],
+    "host_permissions": [
+        "http://*/*",
+        "https://*/*"
+    ],
+    "icons": {
+        "16": "icons/icon16.png",
+        "32": "icons/icon32.png",
+        "48": "icons/icon48.png",
+        "128": "icons/icon128.png"
+    }
+
 }
