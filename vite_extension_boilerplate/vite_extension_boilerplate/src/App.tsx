@@ -7,7 +7,7 @@ function App() {
   const [ colour, setColour ] = useState('red');
   
   const onClick = async () => {
-    let [tab] = await chrome.tabs.query({ active: true});
+    let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
     chrome.scripting.executeScript<string[], void>({
       target: {tabId: tab.id!},
       args: [colour],
