@@ -4,10 +4,11 @@ import viteLogo from '/vite.svg'
 import './App.css'
 
 function App() {
-  const [ colour, setColour ] = useState('red');
+  const [ iSDarkMode, setIsDarkMode ] = useState(false);
   
   const onClick = async () => {
     let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+    
     chrome.scripting.executeScript<string[], void>({
       target: {tabId: tab.id!},
       args: [colour],
