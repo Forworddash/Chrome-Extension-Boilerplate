@@ -4,19 +4,27 @@ import viteLogo from '/vite.svg'
 import './App.css'
 
 function App() {
-  const [ iSDarkMode, setIsDarkMode ] = useState(false);
+  
+  const [isDarkMode, setIsDarkMode] = useState(false);
   
   const onClick = async () => {
     let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
     
-    chrome.scripting.executeScript<string[], void>({
+    chrome.scripting.executeScript({
       target: {tabId: tab.id!},
-      args: [colour],
-      func: (colour) => {
-        document.body.style.backgroundColor = colour;
-      }
+      func: (iSDarkMode) => {
+        if (iSDarkMode) {
+          document.body.style.backgroundColor = "#121212"; // Dark background color
+          document.body.style.color = "#ffffff"; // Light text color
+        } else {
+          document.body.style.backgroundColor = "#ffffff"; // Light background color
+          document.body.style.color = "#000000"; // Dark text color
+        }
+      },
+      args: [isDarkMode],
     });
-  }
+  };
+
   return (
     <>
       <div>
@@ -27,11 +35,18 @@ function App() {
           <img src={reactLogo} className="logo react" alt="React logo" />
         </a>
       </div>
-      <h1>My Extension</h1>
+      <h1>Dark Mode Extension</h1>
       <div className="card">
-        <input type="color" onChange={(e) => setColour(e.currentTarget.value)} value={colour} />
-        <button onClick={() => onClick()}>
-          Click Me
+        <label>
+          <input
+            type="checkbox"
+            checked={isDarkMode}
+            onChange={() => setIsDarkMode(prev => !prev)}
+          />
+          Dark Mode
+        </label>
+        <button onClick={onClick}>
+          Apply
         </button>
         <p>
           Edit <code>src/App.tsx</code> and save to test HMR
