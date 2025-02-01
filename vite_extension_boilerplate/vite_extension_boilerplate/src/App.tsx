@@ -1,18 +1,25 @@
 import reactLogo from './assets/react.svg'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import viteLogo from '/vite.svg'
 import './App.css'
 
 function App() {
   
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    const savedMode = localStorage.getItem('isDarkMode');
+    return savedMode ? JSON.parse(savedMode) : false;
+  });
   
+  const saveDarkMode = (mode: boolean) => {
+    localStorage.setItem('isDarkMode', JSON.stringify(mode));
+  };
+
   const onClick = async () => {
     let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
     
     chrome.scripting.executeScript({
       target: {tabId: tab.id!},
-      func: (iSDarkMode) => {
+      func: (iSDarkMode: boolean) => {
         if (iSDarkMode) {
           document.body.style.backgroundColor = "#121212"; // Dark background color
           document.body.style.color = "#ffffff"; // Light text color
@@ -23,7 +30,21 @@ function App() {
       },
       args: [isDarkMode],
     });
+    saveDarkMode(isDarkMode);
   };
+
+  const handleChange = () => {
+    const newMode = !isDarkMode;
+    setIsDarkMode(newMode);
+    saveDarkMode(newMode); // save the new mode to local storage
+  };
+
+  useEffect(() => {
+    // apply the theme when the component mounts
+    const currentMode = JSON.parse(localStorage.getItem('isDarkMode') || 'false');
+    setIsDarkMode(currentMode);
+    onClick(); // apply the theme when the app loads
+  }, []);
 
   return (
     <>
@@ -41,7 +62,7 @@ function App() {
           <input
             type="checkbox"
             checked={isDarkMode}
-            onChange={() => setIsDarkMode(prev => !prev)}
+            onChange={handleChange}
           />
           Dark Mode
         </label>
