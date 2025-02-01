@@ -5,13 +5,13 @@ import './App.css'
 
 function App() {
   
-  const [isDarkMode, setIsDarkMode] = useState(() => {
-    const savedMode = localStorage.getItem('isDarkMode');
-    return savedMode ? JSON.parse(savedMode) : false;
+  const [mode, setMode] = useState(() => {
+    const savedMode = localStorage.getItem('mode');
+    return savedMode ? JSON.parse(savedMode) : 'none'; // default mode is none, no mode selected
   });
   
-  const saveDarkMode = (mode: boolean) => {
-    localStorage.setItem('isDarkMode', JSON.stringify(mode));
+  const saveMode = (newMode: string) => {
+    localStorage.setItem('mode', JSON.stringify(newMode));
   };
 
   const onClick = async () => {
@@ -19,32 +19,32 @@ function App() {
     
     chrome.scripting.executeScript({
       target: {tabId: tab.id!},
-      func: (iSDarkMode: boolean) => {
-        if (iSDarkMode) {
+      func: (mode: string) => {
+        if (mode === 'dark') {
           document.body.style.backgroundColor = "#121212"; // Dark background color
           document.body.style.color = "#ffffff"; // Light text color
-        } else {
+        } else if (mode === 'light') {
           document.body.style.backgroundColor = "#ffffff"; // Light background color
           document.body.style.color = "#000000"; // Dark text color
+        } else {
+          document.body.style.backgroundColor = ""; // Default background color
+          document.body.style.color = ""; // Default text color
         }
       },
-      args: [isDarkMode],
+      args: [mode],
     });
-    saveDarkMode(isDarkMode);
+    saveMode(mode);
   };
 
-  const handleChange = () => {
-    const newMode = !isDarkMode;
-    setIsDarkMode(newMode);
-    saveDarkMode(newMode); // save the new mode to local storage
+  const handleModeChange = (newMode: string) => {
+    setMode(newMode);
+    saveMode(newMode); // save the new mode to local storage
   };
 
   useEffect(() => {
     // apply the theme when the component mounts
-    const currentMode = JSON.parse(localStorage.getItem('isDarkMode') || 'false');
-    setIsDarkMode(currentMode);
     onClick(); // apply the theme when the app loads
-  }, []);
+  }, [mode]);
 
   return (
     <>
@@ -60,11 +60,30 @@ function App() {
       <div className="card">
         <label>
           <input
-            type="checkbox"
-            checked={isDarkMode}
-            onChange={handleChange}
+            type="radio"
+            name="mode"
+            checked={mode === 'dark'}
+            onChange={() => handleModeChange('dark')}
           />
           Dark Mode
+        </label>
+        <label>
+          <input
+            type="radio"
+            name="mode"
+            checked={mode === 'light'}
+            onChange={() => handleModeChange('light')}
+          />
+          Light Mode
+        </label>
+        <label>
+          <input
+            type="radio"
+            name="mode"
+            checked={mode === 'none'}
+            onChange={() => handleModeChange('none')}
+          />
+          No Mode (Default)
         </label>
         <button onClick={onClick}>
           Apply
