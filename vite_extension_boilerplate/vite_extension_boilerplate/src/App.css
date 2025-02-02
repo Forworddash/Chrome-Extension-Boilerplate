@@ -5,12 +5,14 @@
   text-align: center;
 }
 
-.dark-mode {
+body.dark-mode,
+body.dark-mode * {
   background-color: #121212 !important;
   color: #ffffff !important;
 }
 
-.light-mode {
+body.light-mode,
+body.light-mode * {
   background-color: #ffffff !important;
   color: #000000 !important;
 }
