@@ -20,15 +20,11 @@ function App() {
     chrome.scripting.executeScript({
       target: {tabId: tab.id!},
       func: (mode: string) => {
+        document.body.classList.remove('dark-mode-1', 'light-mode-1'); // reset classes
         if (mode === 'dark') {
-          document.body.style.backgroundColor = "#121212"; // Dark background color
-          document.body.style.color = "#ffffff"; // Light text color
+          document.body.classList.add('dark-mode-1');
         } else if (mode === 'light') {
-          document.body.style.backgroundColor = "#ffffff"; // Light background color
-          document.body.style.color = "#000000"; // Dark text color
-        } else {
-          document.body.style.backgroundColor = ""; // Default background color
-          document.body.style.color = ""; // Default text color
+          document.body.classList.add('light-mode-1');
         }
       },
       args: [mode],
