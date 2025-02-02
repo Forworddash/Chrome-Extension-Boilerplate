@@ -1,6 +1,4 @@
-import reactLogo from './assets/react.svg'
 import { useState, useEffect } from 'react'
-import viteLogo from '/vite.svg'
 import './App.css'
 
 function App() {
@@ -18,6 +16,7 @@ function App() {
   };
 
   const handleModeChange = (newMode: string) => {
+    console.log('newMode', newMode);
     setMode(newMode);
     saveMode(newMode); // save the new mode to local storage
     
@@ -48,14 +47,14 @@ function App() {
 
   return (
     <>
-      <div>
+      {/* <div>
         <a href="https://vite.dev" target="_blank">
           <img src={viteLogo} className="logo" alt="Vite logo" />
         </a>
         <a href="https://react.dev" target="_blank">
           <img src={reactLogo} className="logo react" alt="React logo" />
         </a>
-      </div>
+      </div> */}
       <h1>Dark Mode Extension</h1>
       <div className="toggle-switch">
         <label>
@@ -67,9 +66,9 @@ function App() {
           <span className="slider"></span>
         </label>
       </div>
-      <p className="read-the-docs">
+      {/* <p className="read-the-docs">
         Click on the Vite and React logos to learn more
-      </p>
+      </p> */}
     </>
   )
 }
