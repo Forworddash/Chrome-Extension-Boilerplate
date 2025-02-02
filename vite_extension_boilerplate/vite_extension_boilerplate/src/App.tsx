@@ -5,42 +5,46 @@ import './App.css'
 
 function App() {
   
-  const [mode, setMode] = useState(() => {
-    const savedMode = localStorage.getItem('mode');
-    return savedMode ? JSON.parse(savedMode) : 'none'; // default mode is none, no mode selected
-  });
+  const [mode, setMode] = useState('none');
+    
+  useEffect(() => {
+    chrome.storage.local.get('mode', (data) => {
+      setMode(data.mode || 'none');
+    });
+  }, []);
   
   const saveMode = (newMode: string) => {
-    localStorage.setItem('mode', JSON.stringify(newMode));
-  };
-
-  const onClick = async () => {
-    let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-    
-    chrome.scripting.executeScript({
-      target: {tabId: tab.id!},
-      func: (mode: string) => {
-        document.body.classList.remove('dark-mode-1', 'light-mode-1'); // reset classes
-        if (mode === 'dark') {
-          document.body.classList.add('dark-mode-1');
-        } else if (mode === 'light') {
-          document.body.classList.add('light-mode-1');
-        }
-      },
-      args: [mode],
-    });
-    saveMode(mode);
+    chrome.storage.local.set({ mode: newMode });
   };
 
   const handleModeChange = (newMode: string) => {
     setMode(newMode);
     saveMode(newMode); // save the new mode to local storage
+    
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      const tab = tabs[0];
+      if (tab.id) {
+        chrome.scripting.executeScript({
+          target: { tabId: tab.id },
+          func: (mode: string) => {
+            document.body.classList.remove('dark-mode', 'light-mode');
+            if (mode === 'dark') {
+              document.body.classList.add('dark-mode');
+            } else if (mode === 'light') {
+              document.body.classList.add('light-mode');
+            }
+          },
+          args: [newMode],
+        });
+      }
+    });
+  
   };
 
-  useEffect(() => {
-    // apply the theme when the component mounts
-    onClick(); // apply the theme when the app loads
-  }, [mode]);
+  // useEffect(() => {
+  //   // apply the theme when the component mounts
+  //   onClick(); // apply the theme when the app loads
+  // }, [mode]);
 
   return (
     <>
@@ -53,40 +57,15 @@ function App() {
         </a>
       </div>
       <h1>Dark Mode Extension</h1>
-      <div className="card">
+      <div className="toggle-switch">
         <label>
           <input
-            type="radio"
-            name="mode"
+            type="checkbox"
             checked={mode === 'dark'}
-            onChange={() => handleModeChange('dark')}
+            onChange={(e) => handleModeChange(e.target.checked ? 'dark' : 'light')}
           />
-          Dark Mode
+          <span className="slider"></span>
         </label>
-        <label>
-          <input
-            type="radio"
-            name="mode"
-            checked={mode === 'light'}
-            onChange={() => handleModeChange('light')}
-          />
-          Light Mode
-        </label>
-        <label>
-          <input
-            type="radio"
-            name="mode"
-            checked={mode === 'none'}
-            onChange={() => handleModeChange('none')}
-          />
-          No Mode (Default)
-        </label>
-        <button onClick={onClick}>
-          Apply
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
       </div>
       <p className="read-the-docs">
         Click on the Vite and React logos to learn more
