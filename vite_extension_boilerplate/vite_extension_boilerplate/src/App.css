@@ -9,6 +9,32 @@ body.dark-mode,
 body.dark-mode * {
   background-color: #121212 !important;
   color: #ffffff !important;
+  border-color: #333333 !important;
+}
+
+body.dark-mode h1,
+body.dark-mode h2,
+body.dark-mode h3,
+body.dark-mode h4,
+body.dark-mode h5,
+body.dark-mode h6,
+body.dark-mode p,
+/* body.dark-mode a, */
+body.dark-mode span,
+body.dark-mode div {
+  color: #ffffff !important;
+}
+
+body.dark-mode a {
+  color: #bb86fc !important;
+}
+
+body.dark-mode button,
+body.dark-mode input,
+body.dark-mode textarea {
+  background-color: #333333 !important;
+  color: #ffffff !important;
+  border-color: #555555 !important;
 }
 
 body.light-mode,
