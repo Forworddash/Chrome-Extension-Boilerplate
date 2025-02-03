@@ -29,3 +29,4 @@ function applyMode(mode) {
     childList: true,
     subtree: true,
   });
+
